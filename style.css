@@ -1,0 +1,380 @@
+:root {
+    /* Načítavame podklad z lokálneho adresára */
+    --bg-image: url('podklad3.svg');
+    --primary-accent: #6366f1;
+    --primary-accent-hover: #4f46e5;
+    --accent-glow: rgba(255, 255, 255, 0.65);
+    --text-dark: #1e293b;
+    --text-muted: #475569;
+    --glass-bg: rgba(255, 255, 255, 0.88);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --transition-speed: 0.35s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden;
+    color: var(--text-dark);
+}
+
+/* Plávajúca uvítacia hlavička */
+.site-header {
+    position: fixed;
+    top: 24px;
+    left: 28px;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 16px 24px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    pointer-events: auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.site-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+}
+
+.header-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--primary-accent);
+    background: rgba(99, 102, 241, 0.12);
+    padding: 4px 10px;
+    border-radius: 50px;
+    margin-bottom: 6px;
+}
+
+.site-header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-dark);
+}
+
+.site-header h1 span {
+    color: var(--primary-accent);
+}
+
+.site-header p {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Hlavný kontajner s pomerom 16:9 */
+.portfolio-stage {
+    position: relative;
+    width: 100vw;
+    height: 56.25vw;
+    max-width: 1920px;
+    max-height: 1080px;
+    background-image: var(--bg-image);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Kontajner pre samotný kameň (tlačidlo) */
+.stone-btn {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    user-select: none;
+    transition: filter var(--transition-speed) ease, transform var(--transition-speed) ease;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+}
+
+/* Text vo vnútri kameňa */
+.stone-btn span {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* Hover a Focus efekt: kameň sa nadvihne a rozžiari */
+.stone-btn:hover,
+.stone-btn:focus-visible {
+    --scale: 1.15;
+    filter: drop-shadow(0 0 22px var(--accent-glow)) brightness(1.15);
+    z-index: 100;
+}
+
+/* Jemný indikátor pre už navštívený kameň */
+.stone-btn.visited::after {
+    content: '✓';
+    position: absolute;
+    top: 12%;
+    right: 12%;
+    width: 22px;
+    height: 22px;
+    background: #10b981;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    transform: rotate(calc(-1 * var(--rot, 0deg)));
+    pointer-events: none;
+}
+
+/* Jemná animácia vznášania sa */
+@keyframes floatEffect {
+    0% {
+        transform: rotate(var(--rot)) scale(var(--scale, 1)) translateY(0px);
+    }
+    50% {
+        transform: rotate(var(--rot)) scale(var(--scale, 1)) translateY(-6px);
+    }
+    100% {
+        transform: rotate(var(--rot)) scale(var(--scale, 1)) translateY(0px);
+    }
+}
+
+.is-floating {
+    animation: floatEffect 4s ease-in-out infinite;
+}
+
+/* Úvodná animácia "vypučania" kameňov */
+@keyframes stoneAppear {
+    from {
+        opacity: 0;
+        transform: rotate(var(--rot)) scale(0.3);
+    }
+    to {
+        opacity: 1;
+        transform: rotate(var(--rot)) scale(var(--scale, 1));
+    }
+}
+
+/* ==========================================
+   MODÁLNE OKNO (GLASSMORPHISM POP-UP)
+   ========================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    padding: 42px 38px;
+    width: 100%;
+    max-width: 540px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.28);
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 22px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text-dark);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.close-modal:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+.modal-subtitle {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--primary-accent);
+    margin-bottom: 6px;
+}
+
+.modal-body h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+}
+
+.divider {
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-accent), #a855f7);
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.modal-body p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+/* Štítky (Tagy) v modálnom okne */
+.modal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.tag-badge {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-accent);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Akčné tlačidlo v modálnom okne */
+.modal-action {
+    margin-top: 10px;
+}
+
+.action-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary-accent), #8b5cf6);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(99, 102, 241, 0.45);
+}
+
+/* ==========================================
+   RESPONZIVITA PRE MENŠIE OBRAZOVKY
+   ========================================== */
+@media (max-width: 1200px) {
+    .stone-btn span {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .site-header {
+        top: 14px;
+        left: 14px;
+        padding: 12px 18px;
+    }
+    .site-header h1 {
+        font-size: 18px;
+    }
+    .stone-btn span {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 768px) {
+    .site-header {
+        padding: 10px 14px;
+    }
+    .site-header h1 {
+        font-size: 16px;
+    }
+    .site-header p {
+        display: none;
+    }
+    .stone-btn span {
+        font-size: 9px;
+    }
+    .modal-content {
+        padding: 30px 24px;
+    }
+    .modal-body h2 {
+        font-size: 22px;
+    }
+    .modal-body p {
+        font-size: 14px;
+    }
+}

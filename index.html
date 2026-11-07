@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Portfólio | Lucia Danielová</title>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Prepojenie na externý CSS súbor -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Jemná uvítacia hlavička v ľavom hornom rohu -->
+    <header class="site-header">
+        <div class="header-badge">Portfólio</div>
+        <h1>Lucia <span>Danielová</span></h1>
+        <p>Klikni na kamene a spoznaj moju prácu</p>
+    </header>
+
+    <!-- Hlavný kontajner scény s pomerom 16:9 a pozadím podklad3.svg -->
+    <main class="portfolio-stage" id="stage" aria-label="Interaktívna mapa portfólia"></main>
+
+    <!-- Vyskakovacie (modálne) okno s glassmorphism efektom -->
+    <div id="modal-overlay" class="modal-overlay" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <button class="close-modal" id="close-btn" aria-label="Zavrieť okno">&times;</button>
+            
+            <div class="modal-body">
+                <span class="modal-subtitle" id="modal-subtitle">Sekcia</span>
+                <h2 id="modal-title">Názov sekcie</h2>
+                <div class="divider"></div>
+                <p id="modal-description">Tu sa zobrazí podrobný popis sekcie.</p>
+                
+                <!-- Kontajner pre štítky (technológie, zručnosti alebo body) -->
+                <div id="modal-tags" class="modal-tags"></div>
+                
+                <!-- Kontajner pre akčné tlačidlo (napr. Napísať email / GitHub) -->
+                <div id="modal-action" class="modal-action"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prepojenie na externý JavaScript súbor -->
+    <script src="script.js"></script>
+</body>
+</html>
